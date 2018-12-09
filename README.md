@@ -13,6 +13,7 @@
 
 <h3>WHERE</h3>
 Add this to any flow, community or lightnign record page.
+<br> Install Link: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t10000000usjj
 
 
 
