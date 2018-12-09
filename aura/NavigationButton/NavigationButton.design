@@ -1,0 +1,24 @@
+<design:component label="Navigate Button">
+    <design:attribute name="buttonVarient" label="Button style (varient)" description="base, neautral, brand, destructive, success" />
+    <design:attribute name="Label" label="Button Label" description="The words on the button" />
+    <design:attribute name="buttonStyle" label="Button CSS Style" description="Extra CSS for the button" />
+    <design:attribute name="AutoStart" label="Auto Start without button press" description="" />
+    
+    <design:attribute name="CreateObject" label="New Record:Object Name" description="Only populate if you want to want create a record" />
+    <design:attribute name="CreateRecordtypeId" label="New Record:Recordtype ID" description="Only populate if you want to want create a record" />
+    <design:attribute name="defaultFieldValues" label="New Record:Predefined Variables" description="APiFieldName:Value,APiFieldName:Value" />
+    
+    <design:attribute name="RelatedListId" label="Navigate To Related List:RelatedListId" description="eg. Contact__r" />
+   
+    <design:attribute name="NavigateToUrl" label="Navigate to Url" description="Navigate to a specific URL" />
+    
+    <design:attribute name="EditRecord" label="Edit:Do you want to edit a record?" description="" />
+    
+    <design:attribute name="OutputCreatedID" label="Output: Id of Created Record" description="" />
+    <design:attribute name="Clicked" label="Output:Button Clicked?"/>
+    
+    <design:attribute name="FlowAction" label="Flow:Flow Action" description="" />
+    <design:attribute name="FlowName" label="Flow:API Name of the flow you want to launch" description="" />
+    
+    <design:attribute name="QuickActionName" label="Quick Action:API name of: Object.QuickAction" description="ObjectName.QuickActionName" />
+</design:component>
