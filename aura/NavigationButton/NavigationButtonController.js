@@ -1,23 +1,67 @@
 ({
     doInit : function (component, event, helper) {
-
-		//IF auto start
+        
+        //If has a specifc id
+        var specificrecordId = component.get("v.specificrecordId");
+        if(specificrecordId!=null && specificrecordId != "" && specificrecordId != "recordId" && specificrecordId.length>15 && specificrecordId <=18){
+            component.set("v.recordId",specificrecordId);
+        }
+        
+        //Always start as not clicked
+        component.set("v.Clicked",false);
+        
+		//If auto start
         if( component.get("v.AutoStart")
           //Not in appbuilder / flexipageEditor
           && window.location.href.indexOf("flexipageEditor") <0
           ){
-        	$A.enqueueAction(component.get('c.chooseAction'));
-            console.log('Auto launching');
+        	console.log('Auto launching');
+            let millisecondsdelay = 0;
+            if(component.get("v.AutoStart_Delay")>0){
+                millisecondsdelay = component.get("v.AutoStart_Delay")*1000;
+                //Min of 3 seconds
+                if(millisecondsdelay < 2000){millisecondsdelay = 2000}
+                //Launch with delay
+                    window.setTimeout(
+                        $A.getCallback(function() {
+                            $A.enqueueAction(component.get('c.chooseAction'));  
+                        }), millisecondsdelay
+                    );
+            }else{ //no delay
+                $A.enqueueAction(component.get('c.chooseAction')); 
+            }
+            
+            
         }
         
-         
+        
+        //If has a position add in some CSS
+        var buttonPosition = component.get("v.buttonPosition");
+        if(buttonPosition != null) {buttonPosition = buttonPosition.toLowerCase();}
+        
+        var buttonStyle = component.get("v.buttonStyle");
+        // needed for center
+        if(buttonPosition!=null && buttonPosition != "" && buttonPosition != "default" && buttonPosition != "vertical"){
+            //Add the position CSS to the front of the style
+            var NewButtonStyle = 'text-align:'+buttonPosition +';'+ buttonStyle;
+            component.set("v.buttonStyle",NewButtonStyle);
+        }
+        if(buttonPosition =='left'){
+            component.set("v.NavigateButtonClass",'floatLeft');  
+        }
+        if(buttonPosition=='right'){
+            component.set("v.NavigateButtonClass",'floatRight');  
+        }
+          
         
     },
     chooseAction : function (component, event, helper) {      
       
         //Mark as clicked (useful in flows)
+        console.log('Clicked');
         component.set("v.Clicked", true);   
 		var recordId = component.get("v.recordId");
+        
         //Launch Flow
         if(component.get("v.FlowName") !=""){
              console.log('launchFlow');
@@ -26,7 +70,9 @@
         //Navigate Flow
          else if( component.get("v.FlowAction")!=""){
             	var action = component.get("v.FlowAction");
-            	console.log('FlowAction: '+action);
+             	console.log('FlowAction before: '+action);	
+             	action = action.toUpperCase();
+            	console.log('FlowAction After: '+action);
                 var navigate = component.get('v.navigateFlow');  
         		navigate(action); 
             }
@@ -58,10 +104,18 @@
 
         
     },
+    
+    
+    
     launchFlow : function (component, event, helper) {
         component.set("v.ModalOn", true);
         var recordId = component.get("v.recordId");
-        var inputVariables = [ { name : "recordId", type : "String", value: recordId  }];
+        if(recordId==null || recordId=="" || recordId=="undefined"){
+            recordId = component.get("v.FlowRecordId");
+        }    
+        if(recordId!=null && recordId!="" && recordId!="undefined"){
+            var inputVariables = [ { name : "recordId", type : "String", value: recordId  }];
+        }
         var flow = component.find('flow');
         flow.startFlow(component.get("v.FlowName"),inputVariables);
     },
@@ -73,6 +127,10 @@
         //add parameter with or without ? in place
         if(recordId!=null && recordId!="" && recordId!="undefined"){
         	NavigateToUrl += (NavigateToUrl.split('?')[1] ? '&':'?') + 'BeforeNavigateId='+recordId;
+        }
+        //Add merge field {recordId}
+        if(recordId!=null && recordId!="" && recordId!="undefined" && NavigateToUrl.includes("{recordId}")){
+        	NavigateToUrl = NavigateToUrl.replace("{recordId}", recordId);
         }
         console.log("NavigateToUrl: "+NavigateToUrl);
         urlEvent.setParams({
@@ -99,37 +157,46 @@
         console.log('CreateRecordtypeId   '+CreateRecordtypeId);		
         
         //Set variables
-        if(CreateObject!=""){ 		createEvent.setParams({  "entityApiName": CreateObject });}
-        if(CreateRecordtypeId !=""){ 	createEvent.setParams({  "recordTypeId": CreateRecordtypeId });}
+        if(CreateObject!="" && CreateObject!=null){ 		createEvent.setParams({  "entityApiName": CreateObject });}
+        if(CreateRecordtypeId !="" && CreateRecordtypeId!=null){ 	createEvent.setParams({  "recordTypeId": CreateRecordtypeId });}
         
         
         
         //--Very messy, capture the record ID and redirect back to the page we were on--//
         var NavigateToUrl = component.get("v.NavigateToUrl");
+
         //https://salesforce.stackexchange.com/questions/198168/lightning-forcecreaterecord-capture-redirect-after-save
-        console.log('NavigateToUrl:   '+NavigateToUrl);
+        //console.log('NavigateToUrl wihout new recordID:   '+NavigateToUrl);
+       
+        //https://salesforce.stackexchange.com/questions/223283/override-e-forcecreaterecord-default-behaviour-on-save
+        createEvent.setParams({ "navigationLocation": "LOOKUP" });
         
-            createEvent.setParams({  "panelOnDestroyCallback": function(event) {
-                console.log('New Page:   '+href);
-                //Add the id and return
-                //Remove the record name
-                var ObjectName = window.location.href.split( '/').pop();
-                var hrefwithoutname =window.location.href.replace("/"+ObjectName,"");
-                console.log('ObjectName:   '+ObjectName);
-                var CreatedID = hrefwithoutname.split( '/').pop();
-                console.log('CreatedID:   '+CreatedID);
-                component.set("v.OutputCreatedID", CreatedID );
-                
-                    if(NavigateToUrl != ''){
-                        NavigateToUrl += (NavigateToUrl.split('?')[1] ? '&':'?') + CreateObject+"_Id="+ CreatedID;
-                        console.log('Navigating to:'+NavigateToUrl);
-                        window.location.href= NavigateToUrl;
-                        setTimeout(function(){ 
-                        	 window.location.href= NavigateToUrl;
-                        }, 1000);
-                    }
-                }
-            });
+        createEvent.setParams({  "panelOnDestroyCallback": function(event) {
+           console.log("panelOnDestroyCallback");
+           console.log(event);
+           console.log('Page after record create:   '+window.location.href);
+           
+           
+           //Add the id and return
+           //Remove the record name
+           var ObjectName = window.location.href.split( '/').pop();
+           var hrefwithoutname =window.location.href.replace("/"+ObjectName,"");
+ 
+//  Not working so stopped
+           //console.log('ObjectName:   '+ObjectName);
+           var CreatedID = hrefwithoutname.split( '/').pop();
+           // console.log('CreatedID:   '+CreatedID);
+            //component.set("v.OutputCreatedID", CreatedID );
+           
+           if(NavigateToUrl != ''){
+               NavigateToUrl += (NavigateToUrl.split('?')[1] ? '&':'?') + CreateObject+"_Id="+ CreatedID;
+               console.log('Navigating to (with recordID):'+NavigateToUrl);
+               setTimeout(function(){ 
+                   window.location.href= NavigateToUrl;
+               }, 500);
+           }
+      	 }
+      });
 
         
         //set defaultFieldValues
@@ -142,7 +209,7 @@
                 params[parts[0]] = parts[1];
               }
             );
-            console.log(params);
+            //console.log(params);
             createEvent.setParams({ defaultFieldValues: params });
         }
         
@@ -185,14 +252,6 @@
         
     },
     
-    gotoRelatedList : function (component, event, helper) {
-        var relatedListEvent = $A.get("e.force:navigateToRelatedList");
-        relatedListEvent.setParams({
-            "relatedListId": "Receipts__r",
-            "parentRecordId": component.get("v.recordId")
-        });
-        relatedListEvent.fire();
-    },
 
     
     

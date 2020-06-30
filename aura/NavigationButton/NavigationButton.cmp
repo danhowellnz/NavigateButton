@@ -1,51 +1,60 @@
-<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:availableForFlowScreens">
-
+<aura:component access="global" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:availableForFlowScreens">
 
     <aura:dependency resource="markup://force:navigateToURL" type="EVENT"/>
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     <aura:handler event="force:refreshView" action="{!c.isRefreshed}" />
 
     <aura:attribute name="recordId" 			type="Id" 		default="{!recordId}" access="global"/>
-    <aura:attribute name="buttonVarient" 		type="String" 	default="Brand" access="global"/>
+    <aura:attribute name="specificrecordId" 	type="String" 	default="" access="global"/>
+    
+    <aura:attribute name="buttonVarient" 		type="String" 	default="brand" access="global"/>
+    <aura:attribute name="buttonPosition" 		type="String" 	default="" access="global"/>
     <aura:attribute name="Label" 				type="String" 	default="" access="global"/>
     <aura:attribute name="CreateObject" 		type="String" 	default="" access="global"/>
     <aura:attribute name="CreateRecordtypeId" 	type="String" 	default="" access="global"/>
     <aura:attribute name="NavigateToUrl" 		type="String" 	default="" access="global"/>
-    <aura:attribute name="buttonStyle" 			type="String" 	default="" access="global"/>
+    <aura:attribute name="buttonStyle" 			type="String" 	default="margin-top:5px" access="global"/>
     <aura:attribute name="defaultFieldValues" 	type="String" 	default="" access="global"/>
     <aura:attribute name="FlowAction" 			type="String" 	default="" access="global"/>
     <aura:attribute name="RelatedListId" 		type="String" 	default="" access="global"/>
     <aura:attribute name="EditRecord" 			type="boolean" 	default="false" access="global"/>
     <aura:attribute name="AutoStart" 			type="boolean" 	default="false" access="global"/>
-
+	<aura:attribute name="AutoStart_Delay" 		type="Integer" 	default="" access="global"/>
+    
     <aura:attribute name="OutputCreatedID" 		type="String" 	default="false" access="global"/>
-    <aura:attribute name="Clicked"				type="Boolean" 	default="false" />
+    <aura:attribute name="Clicked"				type="Boolean" 	default="false" access="global"/>
     
     <aura:attribute name="FlowName" 			type="String" 	default="" access="global"/>
+    <aura:attribute name="FlowRecordId" 		type="String" 	default="" access="global"/>
     <aura:attribute name="ModalOn" 				type="Boolean" 	default="false" access="private"/>
     
     <aura:attribute name="QuickActionName" 		type="String" 	default="" access="global"/>
-    
+
+    <aura:attribute name="NavigateButtonClass" 	type="String" 	default="" access="public"/>
+    <aura:attribute name="LastElement" 			type="boolean" 	default="false" access="global"/>
+   
     <lightning:navigation aura:id="navService"/>
     <lightning:quickActionAPI aura:id="quickActionAPI" />
 
-
+	<div  data-holder="NavButtonHolder"> 
     
     <aura:if isTrue="{!v.Label != ''}">
-        <aura:if isTrue="{!v.buttonVarient == 'Text'}">
-            <a onclick="{!c.chooseAction}" href="#">{!v.Label}</a>
+        <aura:if isTrue="{!  v.buttonVarient == 'text'}">
+            <a onclick="{!c.chooseAction}" href="#" style="{!v.buttonStyle}"  >{!v.Label}</a>
             <aura:set attribute="else">
-                <lightning:button variant="{!v.buttonVarient}" label="{!v.Label}" onclick="{!c.chooseAction}" class="NavigateButton" />
+                <div style="{!v.buttonStyle}">
+                <lightning:button variant="{!v.buttonVarient}" label="{!v.Label}" onclick="{!c.chooseAction}" class="{!v.NavigateButtonClass}" />
+                </div>
             </aura:set>
         </aura:if>
     </aura:if>
     
-    <aura:if isTrue="{!v.ModalOn}">
+	 <aura:if isTrue="{!v.ModalOn}">
 		<div style="">
                 <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
                     <div class="slds-modal__container">
                         <header class="slds-modal__header slds-modal__header_empty">
-                            <lightning:buttonIcon iconName="utility:close" class="slds-modal__close" onclick="{!c.closeFlowModal}"/>
+                            <lightning:buttonIcon iconName="utility:close" variant="border-filled"  alternativeText="Close" size="large" class="slds-button slds-button_icon slds-modal__close " onclick="{!c.closeFlowModal}"/>
                         </header>
                         <div class="slds-modal__content slds-p-around_medium">
                             <lightning:flow aura:id="flow" onstatuschange="{!c.closeModalOnFinish}" />
@@ -55,4 +64,8 @@
                 <div class="slds-backdrop slds-backdrop_open"></div>
             </div> 
     </aura:if>
+        
+    </div>
+    
+    
 </aura:component>

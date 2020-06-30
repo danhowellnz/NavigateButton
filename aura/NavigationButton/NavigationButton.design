@@ -1,24 +1,38 @@
 <design:component label="Navigate Button">
-    <design:attribute name="buttonVarient" label="Button style (varient)" description="base, neautral, brand, destructive, success" />
+   
     <design:attribute name="Label" label="Button Label" description="The words on the button" />
-    <design:attribute name="buttonStyle" label="Button CSS Style" description="Extra CSS for the button" />
-    <design:attribute name="AutoStart" label="Auto Start without button press" description="" />
+    <design:attribute name="buttonVarient" label="Button style (variant)" 
+                      datasource="base,neutral,brand,destructive,success,inverse,text"
+                      description="Google lightning:button to see the styles" /> 
+    <design:attribute name="buttonPosition" label="Button Position" 
+                      datasource="left,center,right"
+                      description="Specify how you want to align buttons. Make sure you check 'Last button' for the last button aligned" />
+      <design:attribute name="buttonStyle" label="Button CSS Style" description="Extra CSS for the button" />
+    <design:attribute name="AutoStart" label="Auto Start without button press" description="" default="false"/>
+    <design:attribute name="AutoStart_Delay" label="Auto Start - Delay in seconds" description="" default=""/>
+    
+    
+    <design:attribute name="NavigateToUrl" label="Navigate to Url" description="Navigate to a specific URL" />
     
     <design:attribute name="CreateObject" label="New Record:Object Name" description="Only populate if you want to want create a record" />
     <design:attribute name="CreateRecordtypeId" label="New Record:Recordtype ID" description="Only populate if you want to want create a record" />
     <design:attribute name="defaultFieldValues" label="New Record:Predefined Variables" description="APiFieldName:Value,APiFieldName:Value" />
-    
-    <design:attribute name="RelatedListId" label="Navigate To Related List:RelatedListId" description="eg. Contact__r" />
-   
-    <design:attribute name="NavigateToUrl" label="Navigate to Url" description="Navigate to a specific URL" />
-    
-    <design:attribute name="EditRecord" label="Edit:Do you want to edit a record?" description="" />
-    
     <design:attribute name="OutputCreatedID" label="Output: Id of Created Record" description="" />
-    <design:attribute name="Clicked" label="Output:Button Clicked?"/>
+    <design:attribute name="EditRecord" label="Edit:Do you want to edit a record?" description="" default="false" />
+    <design:attribute name="specificrecordId" label="zDeprecated: Specific record Id" description="If blank it uses the recordId from the page it is on" />
     
-    <design:attribute name="FlowAction" label="Flow:Flow Action" description="" />
-    <design:attribute name="FlowName" label="Flow:API Name of the flow you want to launch" description="" />
+
+    <design:attribute name="FlowAction" label="Flow Action"
+                      datasource="NEXT,PAUSE,FINISH"
+                      description="Used instead of the standard flow actions" />
+    <design:attribute name="FlowName" label="Launch Flow:API Name of the flow you want to launch" description="When the button is clicked it will launch the flow in a modal popup." />
+    <design:attribute name="FlowRecordId" label="Launch Flow: Pass specific 'recordId' to Flow" 
+                      description="Must be an input variable in the flow called recordId" />
+    <design:attribute name="Clicked" label="Output:Button Clicked?" description="Only use as an output value. This is changed to true if they click this button" default="false" />
     
     <design:attribute name="QuickActionName" label="Quick Action:API name of: Object.QuickAction" description="ObjectName.QuickActionName" />
+
+    <design:attribute name="LastElement" label="zDEPRECATED - Last Button" description="Used to end the horizontal positioning. Make true if the last button in a line of buttons" default="false"/>
+
+    
 </design:component>
