@@ -1,0 +1,14 @@
+.THIS .slds-modal__close{
+    right:0px;
+}
+.THIS {
+    margin-bottom:5px;
+}
+.THIS .floatRight{
+    float:right;   
+    margin-left:5px;
+}
+.THIS .floatLeft{
+    float:left;   
+    margin-right:5px;
+}
