@@ -38,6 +38,9 @@
 
     
     <design:attribute name="LastElement" label="zDEPRECATED - Last Button" description="Used to end the horizontal positioning. Make true if the last button in a line of buttons" default="false"/>
+    
+    <design:attribute name="appendFloatClearDiv" label="Append Float Clear Div?" description="By default, a div is appended after the button to clear the floats. Set to False to prevent this." default="true" />
+    <design:attribute name="appendSldsCardStyle" label="Append .slds-card Style?" description="By default, a style is appended after the button to set the .slds-card style to min-height: 6.5REM;. Set to False to prevent this." default="true" />
 
     
 </design:component>
