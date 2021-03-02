@@ -1,4 +1,4 @@
-<design:component label="Navigate Button Custom">
+<design:component label="Navigate Button">
    
     <design:attribute name="Label" label="Button Label" description="The words on the button" />
     <design:attribute name="buttonVarient" label="Button style (variant)" 
