@@ -32,6 +32,9 @@
 
     <aura:attribute name="NavigateButtonClass" 	type="String" 	default="" access="public"/>
     <aura:attribute name="LastElement" 			type="boolean" 	default="false" access="global"/>
+    
+    <aura:attribute name="appendFloatClearDiv"	type="Boolean"	default="True" access="global"/>
+    <aura:attribute name="appendSldsCardStyle"	type="Boolean"	default="True" access="global"/>
    
     <lightning:navigation aura:id="navService"/>
     <lightning:quickActionAPI aura:id="quickActionAPI" />
