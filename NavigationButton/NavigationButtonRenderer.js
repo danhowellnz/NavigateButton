@@ -14,14 +14,14 @@
         
         //Always ensure a button is clickable
         var newCSSstyle= document.createElement("style"); 
-        newCSSstyle.innerHTML = '.slds-card {clear: both;    min-height: 6.5REM;' ; 
+        newCSSstyle.innerHTML = '.slds-card{clear: both;    }' ; 
         lastElement.appendChild(newCSSstyle);
         
         
         
         //STop weird alignment from
         ////apply to first only nav button on page
-      	elements[0].setAttribute("style", "margin-bottom: .75REM;");
+      	//elements[0].setAttribute("style", "margin-bottom: .75REM;");
    
         
 
